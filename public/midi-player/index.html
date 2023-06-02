@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>WebMidi.js Quick Start</title>
+    <script src="https://cdn.jsdelivr.net/npm/webmidi@latest/dist/iife/webmidi.iife.js"></script>
+  </head>
+
+  <body>
+    <h1>WebMidi.js Quick Start</h1>
+    <ul id="list"></ul>
+
+    <script type="module">
+      let o;
+      let c;
+      let d;
+
+      // Enable WEBMIDI.js and trigger the onEnabled() function when ready
+      WebMidi.enable()
+        .then(onEnabled)
+        .catch((err) => alert(err));
+
+      // Function triggered when WEBMIDI.js is ready
+      function onEnabled() {
+        // Display available MIDI input devices
+        if (WebMidi.inputs.length < 1) {
+          document.body.innerHTML += "No device detected.";
+        } else {
+          WebMidi.inputs.forEach((device, index) => {
+            document.body.innerHTML += `${index}: ${device.name} <br>`;
+
+            o = WebMidi.outputs[0];
+            c = o.channels[1];
+            d = o.channels[7];
+          });
+        }
+      }
+
+      const evtSource = new EventSource("/stream");
+
+      evtSource.onmessage = (event) => {
+        const note = JSON.parse(event.data).note;
+        const newElement = document.createElement("li");
+        const eventList = document.getElementById("list");
+
+        newElement.textContent = `message: ${event.data}`;
+        eventList.appendChild(newElement);
+
+        if (JSON.parse(event.data).channel == "1") {
+          c.playNote(note, { duration: 50 });
+        } else {
+          d.playNote(note, { duration: 50 });
+        }
+      };
+    </script>
+  </body>
+</html>

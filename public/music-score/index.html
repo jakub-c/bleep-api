@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script></script>
+    <style>
+      html,
+      body {
+        background: #242020;
+        box-sizing: border-box;
+        font-family: system-ui, sans-serif;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+      }
+      #score {
+        display: flex;
+        flex-direction: row;
+        height: 100%;
+        width: 100%;
+      }
+      #score div {
+        align-items: centers;
+        color: #fff;
+        display: flex;
+        flex: 1;
+        font-size: 25vw;
+        font-weight: 700;
+        justify-content: center;
+        text-align: center;
+        text-decoration: underline;
+        text-decoration-color: red;
+        text-decoration-thickness: 30px;
+      }
+
+      @media (max-width: 850px) {
+        #score {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="score">
+      <div id="score-team-1"></div>
+      <div id="score-team-2"></div>
+    </div>
+    <script type="module">
+      import { nextArrayIndex } from "/public/lib/nextArrayIndex.mjs";
+      import { colors } from "/public/lib/colors.mjs";
+
+      const score = [
+        ["C2", "D2", 1000],
+        ["", "", 1000],
+        ["Cb2", "", 2000],
+        ["D", "F", 3000],
+      ];
+
+      const scoreTeam1 = document.getElementById("score-team-1");
+      const scoreTeam2 = document.getElementById("score-team-2");
+
+      function showStep(step, colorIndex, score) {
+        const durationOfNote = score[step][2];
+        let lastColorIndex = colorIndex;
+
+        const team1Note = score[step][0];
+        scoreTeam1.textContent = team1Note;
+
+        if (team1Note !== "") {
+          const team1ColorIndex = colorIndex;
+          scoreTeam1.style.textDecorationColor = colors[team1ColorIndex].color;
+        }
+
+        const team2Note = score[step][1];
+        scoreTeam2.textContent = team2Note;
+        if (team2Note !== "") {
+          const team2ColorIndex = nextArrayIndex(colorIndex, colors);
+          lastColorIndex = team2ColorIndex;
+          scoreTeam2.style.textDecorationColor = colors[team2ColorIndex].color;
+        }
+
+        setTimeout(() => {
+          return showStep(
+            nextArrayIndex(step, score),
+            nextArrayIndex(lastColorIndex, colors),
+            score
+          );
+        }, durationOfNote);
+      }
+      showStep(0, 0, score);
+    </script>
+  </body>
+</html>

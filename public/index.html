@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      html,
+      body {
+        box-sizing: border-box;
+        font-family: system-ui, sans-serif;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+      }
+      #team-color {
+        height: 5%;
+        width: 100vw;
+      }
+      #keyboard {
+        display: flex;
+        flex-direction: column;
+        height: 95%;
+        width: 100%;
+      }
+      .key {
+        align-items: center;
+        background: #fffdf7;
+        border-top: 5px black solid;
+        color: #000;
+        font-weight: 700;
+        display: flex;
+        font-family: sans-serif;
+        height: calc(100vh / 6);
+        justify-content: center;
+        width: 100vw;
+      }
+      .key:active {
+        background: #73706b;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="team-color"></div>
+    <div id="keyboard">
+      <div class="btn" id="btn1"></div>
+      <div class="btn" id="btn2"></div>
+      <div class="btn" id="btn3"></div>
+      <div class="btn" id="btn4"></div>
+      <div class="btn" id="btn5"></div>
+    </div>
+    <script>
+      const scale = ["C2", "Cb2", "D2", "C2", "Cb2", "D2"];
+
+      const generateKeys = (keysArr) =>
+        keysArr.map(
+          (key, index) =>
+            `<div class="key" id="key-${index}" data-note="${key}" style="
+                  height: ${100 / keysArr.length}%;
+                  font-size: ${100 / keysArr.length - 10}vh;
+                ">${key}</div>`
+        );
+
+      fetch("/color")
+        .then((response) => response.text())
+        .then((response) => {
+          const playerColor = JSON.parse(response).color;
+          const MIDIchannel = JSON.parse(response).channel;
+          document.getElementById("team-color").style.backgroundColor =
+            playerColor;
+
+          document.getElementById("keyboard").innerHTML =
+            generateKeys(scale).join("");
+          [...document.getElementsByClassName("key")].forEach(
+            (element, index) => {
+              element.addEventListener("click", () => {
+                fetch(`/${MIDIchannel}/${scale[index]}`);
+              });
+            }
+          );
+        });
+    </script>
+  </body>
+</html>
