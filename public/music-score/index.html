@@ -33,7 +33,6 @@
         justify-content: center;
         text-align: center;
         text-decoration: underline;
-        text-decoration-color: red;
         text-decoration-thickness: 30px;
       }
 
@@ -50,48 +49,52 @@
       <div id="score-team-2"></div>
     </div>
     <script type="module">
-      import { nextArrayIndex } from "/public/lib/nextArrayIndex.mjs";
       import { colors } from "/public/lib/colors.mjs";
+      import { nextArrayIndex } from "/public/lib/nextArrayIndex.mjs";
+      // import { createStore } from "/public/lib/createStore.mjs";
+      import {
+        createStore,
+        reducer,
+        incrementColorIndex,
+        incrementScoreIndex,
+      } from "/public/lib/stateManagement.mjs";
 
-      const score = [
-        ["C2", "D2", 1000],
-        ["", "", 1000],
-        ["Cb2", "", 2000],
-        ["D", "F", 3000],
-      ];
+      const store = createStore(reducer);
 
-      const scoreTeam1 = document.getElementById("score-team-1");
-      const scoreTeam2 = document.getElementById("score-team-2");
+      function tick() {
+        let currentState = store.getState();
 
-      function showStep(step, colorIndex, score) {
-        const durationOfNote = score[step][2];
-        let lastColorIndex = colorIndex;
+        // handle render and state of left notee
+        const scoreTeam1 = document.getElementById("score-team-1");
+        scoreTeam1.textContent = currentState.score[currentState.scoreIndex][0];
 
-        const team1Note = score[step][0];
-        scoreTeam1.textContent = team1Note;
-
-        if (team1Note !== "") {
-          const team1ColorIndex = colorIndex;
-          scoreTeam1.style.textDecorationColor = colors[team1ColorIndex].color;
+        if (currentState.score[currentState.scoreIndex][0]) {
+          scoreTeam1.style.textDecorationColor =
+            currentState.colors[currentState.colorIndex].color;
+          store.dispatch(incrementColorIndex());
         }
 
-        const team2Note = score[step][1];
-        scoreTeam2.textContent = team2Note;
-        if (team2Note !== "") {
-          const team2ColorIndex = nextArrayIndex(colorIndex, colors);
-          lastColorIndex = team2ColorIndex;
-          scoreTeam2.style.textDecorationColor = colors[team2ColorIndex].color;
+        // handle render and state of right note
+        currentState = store.getState();
+
+        const scoreTeam2 = document.getElementById("score-team-2");
+        scoreTeam2.textContent = currentState.score[currentState.scoreIndex][1];
+
+        if (currentState.score[currentState.scoreIndex][1]) {
+          scoreTeam2.style.textDecorationColor =
+            currentState.colors[currentState.colorIndex].color;
+          store.dispatch(incrementColorIndex());
         }
 
-        setTimeout(() => {
-          return showStep(
-            nextArrayIndex(step, score),
-            nextArrayIndex(lastColorIndex, colors),
-            score
-          );
-        }, durationOfNote);
+        store.dispatch(incrementScoreIndex());
+
+        setTimeout(
+          () => tick(),
+          currentState.score[currentState.scoreIndex][2]
+        );
       }
-      showStep(0, 0, score);
+
+      tick();
     </script>
   </body>
 </html>
