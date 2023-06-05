@@ -37,7 +37,9 @@
         justify-content: center;
         width: 100vw;
       }
-      .key:active {
+
+      .key:active,
+      .key.active {
         background: #73706b;
       }
     </style>
@@ -75,9 +77,15 @@
             generateKeys(scale).join("");
           [...document.getElementsByClassName("key")].forEach(
             (element, index) => {
-              element.addEventListener("click", () => {
-                fetch(`/${MIDIchannel}/${scale[index]}`);
-              });
+              element.addEventListener("touchstart", (event) =>
+                event.target.classList.add("active")
+              );
+              element.addEventListener("touchend", (event) =>
+                event.target.classList.remove("active")
+              );
+              element.addEventListener("click", (event) =>
+                fetch(`/${MIDIchannel}/${scale[index]}`)
+              );
             }
           );
         });
