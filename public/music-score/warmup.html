@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script></script>
+    <style>
+      html,
+      body {
+        background: #242020;
+        box-sizing: border-box;
+        font-family: system-ui, sans-serif;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+      }
+      #score {
+        display: flex;
+        flex-direction: row;
+        height: 100%;
+        width: 100%;
+      }
+      #score div {
+        align-items: centers;
+        color: #fff;
+        display: flex;
+        flex: 1;
+        font-size: 25vw;
+        font-weight: 700;
+        justify-content: center;
+        text-align: center;
+        text-decoration: underline;
+        text-decoration-thickness: 30px;
+      }
+
+      @media (max-width: 850px) {
+        #score {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="score">
+      <div id="score-team-1"></div>
+      <div id="score-team-2"></div>
+    </div>
+    <script type="module">
+      import { colors } from "/public/lib/colors.mjs";
+      import { nextArrayIndex } from "/public/lib/nextArrayIndex.mjs";
+      import { humanReadable } from "/public/lib/humanReadable.mjs";
+      // import { createStore } from "/public/lib/createStore.mjs";
+      import {
+        createStore,
+        reducer,
+        incrementColorIndex,
+        incrementScoreIndex,
+      } from "/public/lib/stateManagement.mjs";
+
+      const score = [
+        ["C3", "", 2000],
+        ["Eb3", "", 2000],
+        ["G3", "", 2000],
+        ["Bb3", "", 2000],
+        ["C3", "C3", 2000],
+        ["Eb3", "Eb3", 2000],
+        ["G3", "G3", 2000],
+        ["Bb3", "Bb3", 2000],
+      ];
+
+      const initialState = {
+        score,
+        scoreIndex: 0,
+        colors,
+        colorIndex: 0,
+      };
+
+      const store = createStore(reducer, initialState);
+
+      function tick() {
+        let currentState = store.getState();
+
+        // handle render and state of left notee
+        const scoreTeam1 = document.getElementById("score-team-1");
+        scoreTeam1.textContent = humanReadable(
+          currentState.score[currentState.scoreIndex][0]
+        );
+
+        if (currentState.score[currentState.scoreIndex][0]) {
+          scoreTeam1.style.textDecorationColor =
+            currentState.colors[currentState.colorIndex].color;
+          store.dispatch(incrementColorIndex());
+        }
+
+        // handle render and state of right note
+        currentState = store.getState();
+
+        const scoreTeam2 = document.getElementById("score-team-2");
+        scoreTeam2.textContent = humanReadable(
+          currentState.score[currentState.scoreIndex][1]
+        );
+
+        if (currentState.score[currentState.scoreIndex][1]) {
+          scoreTeam2.style.textDecorationColor =
+            currentState.colors[currentState.colorIndex].color;
+          store.dispatch(incrementColorIndex());
+        }
+
+        store.dispatch(incrementScoreIndex());
+
+        setTimeout(
+          () => tick(),
+          currentState.score[currentState.scoreIndex][2]
+        );
+      }
+
+      tick();
+    </script>
+  </body>
+</html>
