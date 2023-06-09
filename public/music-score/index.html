@@ -51,6 +51,7 @@
     <script type="module">
       import { colors } from "/public/lib/colors.mjs";
       import { nextArrayIndex } from "/public/lib/nextArrayIndex.mjs";
+      import { humanReadable } from "/public/lib/humanReadable.mjs";
       // import { createStore } from "/public/lib/createStore.mjs";
       import {
         createStore,
@@ -59,14 +60,36 @@
         incrementScoreIndex,
       } from "/public/lib/stateManagement.mjs";
 
-      const store = createStore(reducer);
+      const score = [
+        ["C3", "", 2000],
+        ["", "", 500],
+        ["G3", "", 2000],
+        ["", "", 500],
+        ["Bb3", "Eb3", 2000],
+        ["", "", 500],
+        ["Eb3", "", 2000],
+        ["", "", 500],
+        ["Eb3", "C", 2000],
+        ["", "", 1000],
+      ];
+
+      const initialState = {
+        score,
+        scoreIndex: 0,
+        colors,
+        colorIndex: 0,
+      };
+
+      const store = createStore(reducer, initialState);
 
       function tick() {
         let currentState = store.getState();
 
         // handle render and state of left notee
         const scoreTeam1 = document.getElementById("score-team-1");
-        scoreTeam1.textContent = currentState.score[currentState.scoreIndex][0];
+        scoreTeam1.textContent = humanReadable(
+          currentState.score[currentState.scoreIndex][0]
+        );
 
         if (currentState.score[currentState.scoreIndex][0]) {
           scoreTeam1.style.textDecorationColor =
@@ -78,7 +101,9 @@
         currentState = store.getState();
 
         const scoreTeam2 = document.getElementById("score-team-2");
-        scoreTeam2.textContent = currentState.score[currentState.scoreIndex][1];
+        scoreTeam2.textContent = humanReadable(
+          currentState.score[currentState.scoreIndex][1]
+        );
 
         if (currentState.score[currentState.scoreIndex][1]) {
           scoreTeam2.style.textDecorationColor =

@@ -53,8 +53,10 @@
       <div class="btn" id="btn4"></div>
       <div class="btn" id="btn5"></div>
     </div>
-    <script>
-      const scale = ["C3", "Eb3", "G3", "Bb3", "C4"];
+    <script type="module">
+      import { humanReadable } from "/public/lib/humanReadable.mjs";
+
+      const scale = ["C3", "Eb3", "G3", "Bb3"];
 
       const generateKeys = (keysArr) =>
         keysArr.map(
@@ -62,7 +64,7 @@
             `<div class="key" id="key-${index}" data-note="${key}" style="
                   height: ${100 / keysArr.length}%;
                   font-size: ${100 / keysArr.length - 10}vh;
-                ">${key}</div>`
+                ">${humanReadable(key)}</div>`
         );
 
       fetch("/color")
