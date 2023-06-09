@@ -1,24 +1,28 @@
 import { colors } from "./colors.mjs";
 import { nextArrayIndex } from "./nextArrayIndex.mjs";
 
-const score = [
-  ["C2", "D2", 1000],
-  ["", "", 1000],
-  ["Cb2", "", 2000],
-  ["", "F", 2000],
-  ["D", "F", 3000],
-  ["", "G", 3000],
-];
+// const score = [
+//   ["C3", "", 2000],
+//   ["", "", 500],
+//   ["G3", "", 2000],
+//   ["", "", 500],
+//   ["Bb3", "Eb3", 500],
+//   ["", "", 500],
+//   ["Eb3", "", 2000],
+//   ["", "", 500],
+//   ["Eb3", "C", 2000],
+//   ["", "", 1000],
+// ];
 
-const initialState = {
-  score,
-  scoreIndex: 0,
-  colors,
-  colorIndex: 0,
-};
+// const initialState = {
+//   score,
+//   scoreIndex: 0,
+//   colors,
+//   colorIndex: 0,
+// };
 
-export const createStore = (reducer) => {
-  let state;
+export const createStore = (reducer, initialState) => {
+  let state = initialState;
   // let listeners = [];
 
   const getState = () => state;
@@ -46,7 +50,7 @@ export const createStore = (reducer) => {
 };
 
 // Reducer function
-export const reducer = (state = initialState, action) => {
+export const reducer = (state = {}, action) => {
   switch (action.type) {
     case INCREMENT_COLOR_INDEX:
       // Return a new state object with the counter incremented
