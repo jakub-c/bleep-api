@@ -1,0 +1,37 @@
+openapi: 3.0.3
+info:
+  title: Bleep MIDI API
+  version: 1.0.0
+servers:
+  - url: https://jakub-c-bleep-midi-dev.deno.dev/
+tags:
+  - name: Make sound
+paths:
+  /{channel}/{note}:
+    get:
+      summary: pass a MIDI message to the synthesizer
+      description: |
+        This endpoint allows you remotley trigger a synthesizer. Your API call will be translated into MIDI message.
+        
+        example usage:
+          - `/1/D2` plays note `D2` on channel `1`
+      tags:
+        - Make sound
+      parameters:
+        - name: channel
+          in: path
+          required: true
+          description: "represents a 'voice', currently the sintesizer can play max two 'voices at the same time'"
+          schema:
+            type: string
+            enum: [1,2]
+        - name: note
+          in: path
+          required: true
+          description: "represents a musical pitch"
+          schema:
+            type: string
+            enum: [C2, Db2, D2, Eb2, E2, F2, Gb2, G2, Ab2, A2, Bb2, B2, C3, Db3, D3, Eb3, E3, F3, Gb3, G3, Ab3, A3, Bb3, B3, C4]
+      responses:
+        '200':
+          description: OK
