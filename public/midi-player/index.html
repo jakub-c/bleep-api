@@ -39,17 +39,20 @@
       const evtSource = new EventSource("/stream");
 
       evtSource.onmessage = (event) => {
-        const note = JSON.parse(event.data).note;
+        const eventData = JSON.parse(event.data);
+        const note = eventData.note;
+        const channel = Number(eventData.channel);
+        const duration = Number(eventData.duration);
         const newElement = document.createElement("li");
         const eventList = document.getElementById("list");
 
         newElement.textContent = `message: ${event.data}`;
         eventList.appendChild(newElement);
 
-        if (JSON.parse(event.data).channel == "1") {
-          c.playNote(note, { duration: 50 });
-        } else {
-          d.playNote(note, { duration: 50 });
+        if (channel === 1) {
+          c.playNote(note, { duration });
+        } else if (channel === 2) {
+          d.playNote(note, { duration });
         }
       };
     </script>

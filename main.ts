@@ -30,6 +30,13 @@ const PUBLIC_ROUTE = new URLPattern({ pathname: "/public/*" });
 const NOTE_ROUTE = new URLPattern({ pathname: "/:channel/:note{/}?" });
 const COLOR_ROUTE = new URLPattern({ pathname: "/color{/}?" });
 
+function normaliseNoteduration(duration: number): number {
+  let normalisedDuration = Math.round(duration);
+  if (duration > 2000) normalisedDuration = 2000;
+  else if (duration < 50) normalisedDuration = 50;
+  return normalisedDuration;
+}
+
 redisSub.subscribe("channel").then(async (sub) => {
   for await (const { message } of sub.receive()) {
     dispatchEvent(
@@ -68,9 +75,13 @@ async function handler(req: Request): Response {
     });
   } else if (noteMatch) {
     // NOTE ROUTE
+    const durationParam = new URL(req.url).searchParams.get("duration");
+    console.log(durationParam);
+
     const soundRequest = {
       channel: noteMatch.pathname.groups.channel,
       note: noteMatch.pathname.groups.note,
+      duration: normaliseNoteduration(Number(durationParam)),
     };
 
     redisPub.publish("channel", JSON.stringify(soundRequest));

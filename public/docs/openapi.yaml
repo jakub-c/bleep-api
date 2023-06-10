@@ -9,7 +9,7 @@ tags:
 paths:
   /{channel}/{note}:
     get:
-      summary: pass a MIDI message to the synthesizer
+      summary: pass a MIDI message to the synthesizer - get a sound in return
       description: |
         This endpoint allows you remotley trigger a synthesizer. Your API call will be translated into MIDI message.
         
@@ -32,6 +32,17 @@ paths:
           schema:
             type: string
             enum: [C2, Db2, D2, Eb2, E2, F2, Gb2, G2, Ab2, A2, Bb2, B2, C3, Db3, D3, Eb3, E3, F3, Gb3, G3, Ab3, A3, Bb3, B3, C4]
+        - name: duration
+          in: query
+          required: false
+          description: |
+            represents the duration of the note (how long will a single play)
+              - min value: `50`
+              - max value: `2000`
+          schema:
+            type: integer
+            minimum: 50
+            maximum: 2000
       responses:
         '200':
           description: OK
