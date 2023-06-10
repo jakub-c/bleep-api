@@ -76,7 +76,6 @@ async function handler(req: Request): Response {
   } else if (noteMatch) {
     // NOTE ROUTE
     const durationParam = new URL(req.url).searchParams.get("duration");
-    console.log(durationParam);
 
     const soundRequest = {
       channel: noteMatch.pathname.groups.channel,
