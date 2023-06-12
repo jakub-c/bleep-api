@@ -44,11 +44,8 @@
         const note = eventData.note;
         const channel = Number(eventData.channel);
         const duration = Number(eventData.duration);
-        const newElement = document.createElement("li");
-        const eventList = document.getElementById("list");
 
-        newElement.textContent = `message: ${event.data}`;
-        eventList.appendChild(newElement);
+        console.log(`message: ${event.data}`);
 
         if (channel === 1) {
           c.playNote(note, { duration });
